@@ -39,6 +39,8 @@ hook.add( "gameDraw", "draw", function ()
 end )
 
 hook.add( "gameOver", "gameOver", function ()
+	hook.call( "highScore", math.floor(pl.highDist / 100) )
+
 	pl = player.create( 640, 360 )
 
 	world.platforms = {}
