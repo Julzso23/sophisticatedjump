@@ -40,7 +40,7 @@ function menu.remove ( key )
 	menu.menus[key] = nil
 end
 
-function menu.open ()
+function menu.isOpen ()
 	local open = false
 
 	for k, v in pairs( menu.menus ) do

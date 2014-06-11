@@ -9,11 +9,12 @@ controls.axes = {}
 
 controls.keybinds = {}
 
-function controls.axis.create ( name, positive, negative, axis, deadzone )
+function controls.axis.create ( name, positive, negative, joystick, axis, deadzone )
 	local a = {}
 
 	a.positive = positive
 	a.negative = negative
+	a.joystick = joystick
 	a.axis = axis
 	a.deadzone = deadzone
 
@@ -41,9 +42,9 @@ function controls.axis:value ()
 		end
 	end
 
-	if controls.joysticks[1] then
-		if math.abs( controls.joysticks[1]:getGamepadAxis( self.axis ) ) > self.deadzone then
-			return controls.joysticks[1]:getGamepadAxis( self.axis )
+	if controls.joysticks[self.joystick] then
+		if math.abs( controls.joysticks[self.joystick]:getGamepadAxis( self.axis ) ) > self.deadzone then
+			return controls.joysticks[self.joystick]:getGamepadAxis( self.axis )
 		end
 	end
 
@@ -59,12 +60,12 @@ function controls.isDown ( bind )
 	return love.keyboard.isDown( controls.keybinds[ bind ] )
 end
 
-function controls.vibrate( intensity )
-	if controls.joysticks[1] then
-		if controls.joysticks[1]:isVibrationSupported() then
-			controls.joysticks[1]:setVibration( intensity, intensity )
+function controls.vibrate( joystick, intensity )
+	if controls.joysticks[joystick] then
+		if controls.joysticks[joystick]:isVibrationSupported() then
+			controls.joysticks[joystick]:setVibration( intensity, intensity )
 			timer.temp( intensity, 0, function ()
-				controls.joysticks[1]:setVibration( 0, 0 )
+				controls.joysticks[joystick]:setVibration( 0, 0 )
 			end )
 		end
 	end

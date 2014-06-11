@@ -6,14 +6,15 @@ hook.add( "gameInit", "playerInit", function ()
 	controls.newKeyBind( "right", "d" )
 	controls.newKeyBind( "shoot", " " )
 
-	controls.axis.create( "horizontal", controls.keybinds.right, controls.keybinds.left, "leftx", 0.25 )
-	controls.axis.create( "shoot", controls.keybinds.shoot, nil, "triggerright", 0.25 )
+	controls.axis.create( "horizontal", controls.keybinds.right, controls.keybinds.left, 1, "leftx", 0.25 )
+	controls.axis.create( "shoot", controls.keybinds.shoot, nil, 1, "triggerright", 0.25 )
 
 	pl = player.create( 640, 360 )
 
-	for i = 1, 10 do
-		table.insert( world.platforms, platform.create( math.random( 1, 128 )*10, math.random( 1, 72 )*10, "grass" ) )
-	end
+	table.insert( world.platforms, platform.create( 640, 420, "grass" ) )
+	table.insert( world.platforms, platform.create( math.random( 1, 128 )*10, 220, "grass" ) )
+	table.insert( world.platforms, platform.create( math.random( 1, 128 )*10, 20, "grass" ) )
+	table.insert( world.platforms, platform.create( math.random( 1, 128 )*10, 0, "grass" ) )
 end )
 
 hook.add( "gameUpdate", "update", function ( dt )
@@ -35,4 +36,17 @@ hook.add( "gameDraw", "draw", function ()
 	end
 
 	pl:draw()
+end )
+
+hook.add( "gameOver", "gameOver", function ()
+	pl = player.create( 640, 360 )
+
+	world.platforms = {}
+
+	table.insert( world.platforms, platform.create( 640, 420, "grass" ) )
+	table.insert( world.platforms, platform.create( math.random( 1, 128 )*10, 220, "grass" ) )
+	table.insert( world.platforms, platform.create( math.random( 1, 128 )*10, 20, "grass" ) )
+	table.insert( world.platforms, platform.create( math.random( 1, 128 )*10, 0, "grass" ) )
+
+	menu.menus.main:setVisible( true )
 end )

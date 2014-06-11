@@ -12,6 +12,8 @@ function player.create ( x, y )
 
 	p.distance = 0
 	p.totalDist = 0
+	p.highDist = 0
+	p.fallDist = 0
 
 	p.falling = false
 	p.standing = false
@@ -42,17 +44,27 @@ function player:update ( dt )
 	for k, v in pairs( world.platforms ) do
 		v.y = v.y + self.vSpeed * dt
 	end
+
+	
+	if self.vSpeed > 0 then
+		self.fallDist = 0
+	else
+		self.fallDist = self.fallDist - self.vSpeed * dt
+
+		if self.fallDist > 1500 then
+			hook.call( "gameOver" )
+		end
+	end
+
 	self.distance = self.distance + self.vSpeed * dt
 	self.totalDist = self.totalDist + self.vSpeed * dt
+	if self.totalDist > self.highDist then
+		self.highDist = self.totalDist
+	end
 
 	if self.distance >= 200 then
 		self.distance = 0
 		table.insert( world.platforms, platform.create( math.random( 1, 128 )*10, -12, "grass" ) )
-	end
-
-	if self.y > love.window.getHeight() + 48 then
-		self.totalDist = 0
-		self.y = 360
 	end
 
 	if self.x < -48 then
@@ -74,9 +86,9 @@ function player:jump ()
 
 	self.stance = "crouching"
 	
-	timer.temp( 0.05, 0, function ( self )
+	timer.temp( 0.1, 0, function ( self )
 		self.stance = "idle"
-		timer.temp( 0.05, 0, function ( self )
+		timer.temp( 0.1, 0, function ( self )
 			self.stance = "jumping"
 			self.vSpeed = 500
 			self.standing = false
